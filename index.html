@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280, initial-scale=1.0">
+<title>AYC Connect — Web UI/UX Design Specification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+/* Accessibility: focus-visible ring */
+:focus-visible{outline:2.5px solid var(--g500);outline-offset:2px;border-radius:4px}
+.skip-link{position:absolute;top:-40px;left:8px;background:var(--n900);color:white;padding:8px 16px;border-radius:var(--r2);font-size:13px;font-weight:700;z-index:99999;transition:top 0.2s}
+.skip-link:focus{top:8px}
+button:focus-visible,a:focus-visible,.ptab:focus-visible,.stab:focus-visible{outline:2.5px solid var(--g400);outline-offset:3px}
+:root{
+  --n900:#0A1D3D;--n800:#122B56;--n700:#1A3A6E;
+  --g500:#C8941A;--g400:#DBA82A;--g300:#F0C850;--g100:#FDF4DF;
+  --t600:#076363;--t500:#0B8686;--t400:#10AAAA;--t100:#E3F6F6;
+  --p600:#4F2A8E;--p500:#6B38B8;--p100:#F0EBF9;
+  --cream:#F4F1EB;--cream2:#EDE9E1;--white:#FFFFFF;--surface:#FAFAF8;
+  --ink:#0F1C2D;--ink2:#2B3A52;--ink3:#526070;--ink4:#8A9AB0;--ink5:#C0CDD9;
+  --line:#E4DED5;--line2:#EDE8E2;
+  --sp:#2563EB;--sp-bg:#EFF6FF;
+  --sd:#DC2626;--sd-bg:#FEF2F2;
+  --si:#D97706;--si-bg:#FFFBEB;
+  --sq:#059669;--sq-bg:#ECFDF5;
+  --sr:#7C3AED;--sr-bg:#F5F3FF;
+  --sh1:0 1px 3px rgba(10,29,61,.05);
+  --sh2:0 2px 8px rgba(10,29,61,.08);
+  --sh3:0 4px 20px rgba(10,29,61,.11);
+  --sh4:0 8px 40px rgba(10,29,61,.15);
+  --r1:4px;--r2:8px;--r3:12px;--r4:16px;--r5:24px;--rf:9999px;
+  --tr:0.18s ease;--tr2:0.28s ease;
+}
+html{font-size:14px;scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--ink2);-webkit-font-smoothing:antialiased;min-width:1200px}
+
+/* META BAR */
+.meta-bar{background:var(--n900);color:rgba(255,255,255,.5);padding:11px 40px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.meta-bar b{color:var(--g400)}
+.meta-bar em{color:rgba(255,255,255,.25);font-style:normal;margin:0 10px}
+
+/* PAGE NAV */
+.page-nav{background:var(--white);border-bottom:2px solid var(--line2);padding:0 40px;display:flex;align-items:center;gap:4px;position:sticky;top:0;z-index:9999;box-shadow:var(--sh1);role:tablist}
+.ptab{padding:16px 26px;font-size:12.5px;font-weight:700;color:var(--ink4);background:none;border:none;border-bottom:2.5px solid transparent;margin-bottom:-2px;cursor:pointer;display:flex;align-items:center;gap:9px;transition:var(--tr);letter-spacing:.015em;min-height:44px}
+.ptab .pnum{width:22px;height:22px;border-radius:50%;background:var(--cream);font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:var(--tr)}
+.ptab.active,.ptab:hover{color:var(--n900)}
+.ptab.active{border-bottom-color:var(--g500)}
+.ptab.active .pnum{background:var(--n900);color:var(--g400)}
+
+/* PAGE SECTIONS */
+.psec{display:none}.psec.active{display:block}
+
+/* ===== DESIGN SYSTEM PANEL ===== */
+.ds-panel{background:linear-gradient(155deg,var(--n900) 0%,#0E2347 55%,#123260 100%);padding:60px 80px 52px;position:relative;overflow:hidden}
+.ds-panel::before{content:'';position:absolute;top:-90px;right:-70px;width:300px;height:300px;border-radius:50%;background:var(--g500);opacity:.06}
+.ds-panel::after{content:'';position:absolute;bottom:-50px;left:250px;width:200px;height:200px;border-radius:50%;background:var(--t500);opacity:.07}
+.ds-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:52px;position:relative;z-index:1}
+.ayc-logo{display:flex;align-items:center;gap:14px}
+.logo-mark svg{width:48px;height:48px}
+.logo-words{display:flex;flex-direction:column;gap:3px;line-height:1}
+.logo-ayc{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:white;letter-spacing:.06em}
+.logo-connect{font-family:'Plus Jakarta Sans',sans-serif;font-size:8.5px;font-weight:500;letter-spacing:.35em;color:var(--g400);text-transform:uppercase}
+.ds-right{text-align:right}
+.ds-kicker{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:6px}
+.ds-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;color:white;line-height:1.08;margin-bottom:8px}
+.ds-by{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.05em}
+.ds-grid{display:grid;grid-template-columns:1.7fr 1fr 1.3fr;gap:20px;position:relative;z-index:1}
+.ds-block{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:var(--r5);padding:20px}
+.ds-lbl{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--g400);margin-bottom:16px}
+.cp-row{display:flex;gap:6px;margin-bottom:7px}
+.chip{flex:1;border-radius:var(--r2);padding:5px 6px;display:flex;flex-direction:column;justify-content:flex-end;min-height:50px}
+.chip-n{font-size:8px;font-weight:700;letter-spacing:.03em;opacity:.9;line-height:1.2}
+.typo-samp{margin-bottom:13px}
+.typo-samp:last-child{margin-bottom:0}
+.t-name{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px}
+.t-disp{font-family:'Cormorant Garamond',serif;color:white;line-height:1.1}
+.t-body{color:rgba(255,255,255,.75);line-height:1.5}
+.t-abc{font-size:9.5px;color:rgba(255,255,255,.25);letter-spacing:.05em;margin-top:3px}
+.icon-gs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.icon-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:var(--r3);padding:10px 5px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.icon-chip svg{width:19px;height:19px;color:rgba(255,255,255,.72)}
+.icon-chip span{font-size:7.5px;color:rgba(255,255,255,.32);text-align:center;letter-spacing:.04em;line-height:1.3}
+.status-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.s-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.s-nm{font-size:10px;color:rgba(255,255,255,.6);flex:1}
+.s-badge-sm{font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--rf)}
+
+/* ===== APP SHELL ===== */
+.app-shell{display:flex;height:720px;overflow:hidden;background:var(--surface)}
+
+/* SIDEBAR */
+.sidebar{width:240px;min-width:240px;background:var(--n900);display:flex;flex-direction:column;height:100%;flex-shrink:0}
+.sb-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:12px;cursor:pointer}
+.sb-logo-mark svg{width:28px;height:28px}
+.sb-words{display:flex;flex-direction:column;line-height:1}
+.sb-ayc{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:white;letter-spacing:.06em}
+.sb-con{font-size:7px;font-weight:600;letter-spacing:.28em;color:var(--g400);text-transform:uppercase;margin-top:2px}
+.sb-nav{flex:1;padding:14px 0;overflow-y:auto}
+.sb-nav::-webkit-scrollbar{display:none}
+.nav-grp-lbl{font-size:8px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.22);padding:12px 20px 5px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,.52);font-size:12px;font-weight:500;cursor:pointer;transition:var(--tr);border-left:2.5px solid transparent;user-select:none;min-height:44px}
+.nav-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.82)}
+.nav-item.active{background:rgba(200,148,26,.11);color:var(--g400);border-left-color:var(--g500)}
+.nav-item svg{width:15px;height:15px;min-width:15px;opacity:.9}
+.nav-badge{margin-left:auto;background:var(--g500);color:var(--n900);font-size:9px;font-weight:800;padding:1.5px 6px;border-radius:var(--rf);min-width:18px;text-align:center}
+.sb-div{height:1px;background:rgba(255,255,255,.07);margin:8px 0}
+.sb-user{padding:15px 20px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;cursor:pointer;transition:var(--tr);min-height:56px}
+.sb-user:hover{background:rgba(255,255,255,.04)}
+.sb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--g500),var(--g300));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--n900);flex-shrink:0}
+.sb-ui{flex:1;overflow:hidden}
+.sb-un{font-size:12px;font-weight:700;color:rgba(255,255,255,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-ur{font-size:10px;color:rgba(255,255,255,.32)}
+.sb-more svg{width:13px;height:13px;color:rgba(255,255,255,.25)}
+
+/* MAIN */
+.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:60px;background:var(--white);border-bottom:1px solid var(--line2);padding:0 28px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.tb-bc{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink4)}
+.tb-bc strong{color:var(--ink2);font-weight:700}
+.tb-bc svg{width:13px;height:13px}
+.tb-sp{flex:1}
+.tb-search{display:flex;align-items:center;gap:7px;background:var(--cream);border:1.5px solid var(--line);border-radius:var(--rf);padding:8px 14px;font-size:11.5px;color:var(--ink4);width:210px;cursor:text;transition:var(--tr)}
+.tb-search svg{width:12px;height:12px;flex-shrink:0}
+.tb-btn{width:36px;height:36px;border-radius:var(--r2);border:1px solid var(--line2);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink3);transition:var(--tr);position:relative;min-width:36px}
+.tb-btn:hover{background:var(--cream)}
+.tb-btn svg{width:14px;height:14px}
+.tb-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--g500);border:1.5px solid white}
+.tb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--g500),var(--g300));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--n900);cursor:pointer}
+.main-content{flex:1;overflow-y:auto;padding:28px}
+.main-content::-webkit-scrollbar{width:4px}
+.main-content::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+/* SCREENS */
+.screen{display:none}.screen.active{display:block}
+
+/* SCREEN SWITCHER */
+.scr-sw{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;background:var(--white);border-bottom:1px solid var(--line2);flex-wrap:wrap}
+.stab{padding:7px 16px;border-radius:var(--rf);font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--line);background:transparent;color:var(--ink4);transition:var(--tr);display:inline-flex;align-items:center;gap:5px;letter-spacing:.01em;min-height:34px}
+.stab svg{width:11px;height:11px}
+.stab.active{background:var(--n900);border-color:var(--n900);color:white}
+.stab:hover:not(.active){border-color:var(--n800);color:var(--n900)}
+
+/* === DASHBOARD SCREEN === */
+.greet-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px}
+.greet-time{font-size:10px;font-weight:700;color:var(--ink5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.greet-name{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:600;color:var(--ink);line-height:1.1;margin-bottom:4px}
+.greet-sub{font-size:12px;color:var(--ink4)}
+.greet-cta{display:inline-flex;align-items:center;gap:7px;background:var(--n900);color:white;border:none;padding:11px 22px;border-radius:var(--rf);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:var(--tr);letter-spacing:.015em;min-height:44px}
+.greet-cta:hover{background:var(--n800);transform:translateY(-1px);box-shadow:var(--sh3)}
+.greet-cta svg{width:13px;height:13px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--white);border:1px solid var(--line2);border-radius:var(--r4);padding:20px;cursor:default;transition:var(--tr2)}
+.stat-card:hover{box-shadow:var(--sh3);transform:translateY(-2px)}
+.sc-ico{width:34px;height:34px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.sc-ico svg{width:15px;height:15px}
+.sc-val{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:5px}
+.sc-lbl{font-size:10.5px;font-weight:500;color:var(--ink4)}
+.sc-trend{font-size:9.5px;font-weight:700;display:flex;align-items:center;gap:3px;margin-top:8px}
+.sc-trend svg{width:10px;height:10px}
+.trend-up{color:#059669}.trend-dn{color:#DC2626}
+.dash-cols{display:grid;grid-template-columns:1fr 292px;gap:16px}
+.dash-left>*{margin-bottom:16px}
+.dash-left>*:last-child{margin-bottom:0}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.sh-t{font-size:12.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px}
+.sh-t svg{width:13px;height:13px;color:var(--ink4)}
+.sh-lnk{font-size:11px;font-weight:700;color:var(--n700);cursor:pointer;display:flex;align-items:center;gap:3px}
+.sh-lnk:hover{color:var(--g500)}
+.sh-lnk svg{width:11px;height:11px}
+.req-list{background:var(--white);border:1px solid var(--line2);border-radius:var(--r4);overflow:hidden}
+.req-row{display:flex;align-items:center;gap:10px;padding:14px 17px;border-bottom:1px solid var(--line2);cursor:pointer;transition:var(--tr);min-height:56px}
+.req-row:last-child{border-bottom:none}
+.req-row:hover{background:var(--cream)}
+.rr-ic{width:36px;height:36px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rr-ic svg{width:16px;height:16px}
+.rr-inf{flex:1;overflow:hidden}
+.rr-t{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.rr-s{font-size:10px;color:var(--ink4);display:flex;align-items:center;gap:8px}
+.rr-s span{display:flex;align-items:center;gap:3px}
+.rr-s svg{width:9px;height:9px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--rf);font-size:9.5px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.badge-p{background:var(--sp-bg);color:var(--sp)}
+.badge-d{background:var(--sd-bg);color:var(--sd)}
+.badge-i{background:var(--si-bg);color:var(--si)}
+.badge-q{background:var(--sq-bg);color:var(--sq)}
+.badge-r{background:var(--sr-bg);color:var(--sr)}
+.widget{background:var(--white);border:1px solid var(--line2);border-radius:var(--r4);overflow:hidden;margin-bottom:14px}
+.widget:last-child{margin-bottom:0}
+.widget-h{padding:14px 17px;border-bottom:1px solid var(--line2);display:flex;align-items:center;justify-content:space-between}
+.widget-ht{font-size:12px;font-weight:700;color:var(--ink)}
+.widget-ha{font-size:10.5px;font-weight:700;color:var(--n700);cursor:pointer}
+.widget-ha:hover{color:var(--g500)}
+.widget-b{padding:14px 17px}
+.qa-list{display:flex;flex-direction:column;gap:8px}
+.qa-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--cream);border:1px solid var(--line2);border-radius:var(--r3);cursor:pointer;transition:var(--tr2);min-height:48px}
+.qa-row:hover{background:var(--n900);border-color:var(--n900)}
+.qa-row:hover .qa-ico{background:rgba(255,255,255,.1);color:white}
+.qa-row:hover .qa-lbl{color:white}
+.qa-row:hover .qa-sub{color:rgba(255,255,255,.5)}
+.qa-row:hover .qa-arr{color:rgba(255,255,255,.4)}
+.qa-ico{width:30px;height:30px;border-radius:var(--r1);background:rgba(10,29,61,.07);display:flex;align-items:center;justify-content:center;color:var(--n900);flex-shrink:0;transition:var(--tr)}
+.qa-ico svg{width:14px;height:14px}
+.qa-tx{flex:1}
+.qa-lbl{font-size:11.5px;font-weight:700;color:var(--ink);transition:var(--tr)}
+.qa-sub{font-size:9.5px;color:var(--ink4);transition:var(--tr)}
+.qa-arr{color:var(--ink5);transition:var(--tr)}
+.qa-arr svg{width:12px;height:12px}
+.mtg-item{display:flex;gap:9px;margin-bottom:9px;padding-bottom:9px;border-bottom:1px solid var(--line2)}
+.mtg-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.mtg-date{min-width:38px;background:var(--n900);border-radius:var(--r2);padding:6px 5px;text-align:center;flex-shrink:0}
+.mtg-day{font-size:7.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+.mtg-num{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--g400);line-height:1}
+.mtg-inf{flex:1}
+.mtg-tt{font-size:11px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.mtg-tm{font-size:10px;color:var(--ink4);display:flex;align-items:center;gap:4px}
+.mtg-tm svg{width:9px;height:9px}
+.chip-xs{display:inline-flex;align-items:center;padding:2px 7px;border-radius:var(--rf);font-size:9px;font-weight:700;margin-top:3px}
+
+/* === SERVICES SCREEN === */
+.svc-hd{margin-bottom:20px}
+.svc-hd h2{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.svc-hd p{font-size:12.5px;color:var(--ink4)}
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}
+.svc-card{border-radius:var(--r5);padding:24px;cursor:pointer;transition:var(--tr2);position:relative;overflow:hidden}
+.svc-card:hover{transform:translateY(-4px);box-shadow:var(--sh4)}
+.svc-card::after{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06)}
+.sc-biz{background:linear-gradient(140deg,#0A1D3D,#1A3562)}
+.sc-ai{background:linear-gradient(140deg,#076363,#0B8686)}
+.sc-hr{background:linear-gradient(140deg,#7A4A00,#C08015)}
+.sc-mkt{background:linear-gradient(140deg,#4A208A,#6B38B8)}
+.svc-card-ico{width:44px;height:44px;border-radius:var(--r3);background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;margin-bottom:13px}
+.svc-card-ico svg{width:21px;height:21px;color:white}
+.svc-cat{font-size:8.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px}
+.svc-card-t{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:white;margin-bottom:7px;line-height:1.15}
+.svc-desc{font-size:11px;color:rgba(255,255,255,.62);line-height:1.6;margin-bottom:14px}
+.svc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+.svc-tag{font-size:9px;font-weight:600;background:rgba(255,255,255,.1);color:rgba(255,255,255,.78);padding:3.5px 8px;border-radius:var(--rf)}
+.svc-act{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;padding:8px 15px;border-radius:var(--rf);cursor:pointer;transition:var(--tr);letter-spacing:.02em}
+.svc-act:hover{background:rgba(255,255,255,.2)}
+.svc-act svg{width:12px;height:12px}
+
+/* === REQUEST FORM === */
+.form-wrap{max-width:650px;margin:0 auto}
+.form-prog{display:flex;align-items:center;margin-bottom:28px;padding:0 6px}
+.fp-step{display:flex;align-items:center;flex:1}
+.fp-step:last-child{flex:0}
+.fp-circ{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--ink4);flex-shrink:0;position:relative;z-index:1;transition:var(--tr2)}
+.fp-circ.done{background:var(--n900);border-color:var(--n900);color:white}
+.fp-circ.active{background:var(--g500);border-color:var(--g500);color:var(--n900)}
+.fp-circ svg{width:13px;height:13px}
+.fp-line{flex:1;height:2px;background:var(--line);transition:var(--tr2)}
+.fp-line.done{background:var(--n900)}
+.fp-lbl{position:absolute;top:34px;left:50%;transform:translateX(-50%);font-size:8.5px;font-weight:700;color:var(--ink4);white-space:nowrap;letter-spacing:.04em}
+.fp-circ.active .fp-lbl,.fp-circ.done .fp-lbl{color:var(--n900)}
+.form-card{background:var(--white);border:1px solid var(--line2);border-radius:var(--r5);padding:26px;margin-bottom:10px}
+.fc-t{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.fc-s{font-size:12px;color:var(--ink4);margin-bottom:20px}
+.svc-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px}
+.svc-opt{border:2px solid var(--line);border-radius:var(--r4);padding:13px;cursor:pointer;transition:var(--tr2);display:flex;align-items:center;gap:9px}
+.svc-opt:hover{border-color:var(--n800);background:rgba(10,29,61,.02)}
+.svc-opt.sel{border-color:var(--n900);background:rgba(10,29,61,.04)}
+.so-ic{width:36px;height:36px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.so-ic svg{width:17px;height:17px}
+.so-tx{flex:1}
+.so-n{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:1px}
+.so-s{font-size:10px;color:var(--ink4)}
+.so-r{width:17px;height:17px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--tr)}
+.svc-opt.sel .so-r{background:var(--n900);border-color:var(--n900);color:white}
+.so-r svg{width:9px;height:9px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fi-grp{display:flex;flex-direction:column;gap:4px}
+.fi-grp.full{grid-column:1/-1}
+.fi-lbl{font-size:11px;font-weight:700;color:var(--ink2);letter-spacing:.015em}
+.fi-lbl.req::after{content:' *';color:#DC2626}
+.fi{padding:9px 12px;background:var(--cream);border:1.5px solid var(--line);border-radius:var(--r3);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;color:var(--ink);outline:none;transition:var(--tr);width:100%}
+.fi:focus{border-color:var(--n900);background:var(--white);box-shadow:0 0 0 3px rgba(10,29,61,.07)}
+.fi::placeholder{color:var(--ink5)}
+textarea.fi{resize:vertical;min-height:88px;line-height:1.5}
+.form-acts{display:flex;justify-content:space-between;align-items:center;padding-top:12px}
+.btn-back{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1.5px solid var(--line);color:var(--ink3);font-family:'Plus Jakarta Sans',sans-serif;font-size:11.5px;font-weight:700;padding:9px 18px;border-radius:var(--rf);cursor:pointer;transition:var(--tr)}
+.btn-back:hover{border-color:var(--n900);color:var(--n900)}
+.btn-back svg,.btn-next svg,.btn-sub svg{width:12px;height:12px}
+.btn-next{display:inline-flex;align-items:center;gap:7px;background:var(--n900);border:none;color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:11.5px;font-weight:700;padding:10px 20px;border-radius:var(--rf);cursor:pointer;transition:var(--tr)}
+.btn-next:hover{background:var(--n800);transform:translateY(-1px);box-shadow:var(--sh3)}
+.btn-sub{display:inline-flex;align-items:center;gap:7px;background:var(--g500);border:none;color:var(--n900);font-family:'Plus Jakarta Sans',sans-serif;font-size:11.5px;font-weight:800;padding:10px 20px;border-radius:var(--rf);cursor:pointer;transition:var(--tr)}
+.btn-sub:hover{background:var(--g400);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,148,26,.35)}
+
+/* === TRACKER SCREEN === */
+.trk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.trk-top h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--ink)}
+.fil-row{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.fil-pill{display:inline-flex;align-items:center;gap:4px;padding:6px 13px;border-radius:var(--rf);font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--line);background:var(--white);color:var(--ink4);transition:var(--tr)}
+.fil-pill.active{background:var(--n900);border-color:var(--n900);color:white}
+.fil-pill:hover:not(.active){border-color:var(--n800);color:var(--n900)}
+.fp-cnt{font-size:9px;font-weight:800;padding:1px 5px;border-radius:8px;background:rgba(255,255,255,.2)}
+.fil-pill:not(.active) .fp-cnt{background:var(--cream);color:var(--ink4)}
+.trk-card{background:var(--white);border:1px solid var(--line2);border-radius:var(--r4);padding:16px;margin-bottom:9px;cursor:pointer;transition:var(--tr2);display:grid;grid-template-columns:36px 1fr auto;gap:11px;align-items:start}
+.trk-card:hover{box-shadow:var(--sh3);border-color:var(--line)}
+.trk-card.expanded{border-color:var(--n900)}
+.tc-ic{width:36px;height:36px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tc-ic svg{width:17px;height:17px}
+.tc-inf{overflow:hidden}
+.tc-id{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);margin-bottom:3px}
+.tc-t{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.tc-m{font-size:10px;color:var(--ink4);display:flex;align-items:center;gap:10px}
+.tc-m span{display:flex;align-items:center;gap:3px}
+.tc-m svg{width:9px;height:9px}
+.tc-right{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.tc-tl{margin-top:12px;padding-top:12px;border-top:1px solid var(--line2);grid-column:1/-1}
+.tl-lbl{font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);margin-bottom:9px}
+.tl-track{display:flex;align-items:flex-start}
+.tl-step{display:flex;flex-direction:column;align-items:center;flex:1}
+.tl-step:last-child{flex:0}
+.tl-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--line);background:var(--white);position:relative;z-index:1;transition:var(--tr2);flex-shrink:0}
+.tl-dot.done{background:var(--n900);border-color:var(--n900)}
+.tl-dot.cur{background:var(--g500);border-color:var(--g500);box-shadow:0 0 0 3px rgba(200,148,26,.2)}
+.tl-con{flex:1;height:2px;background:var(--line);margin-top:5.5px;align-self:flex-start;transition:var(--tr2)}
+.tl-con.done{background:var(--n900)}
+.tl-lbl2{font-size:8px;font-weight:600;color:var(--ink4);margin-top:5px;text-align:center;max-width:48px;line-height:1.3}
+.tl-lbl2.act{color:var(--n900);font-weight:800}
+
+/* === MESSAGES SCREEN === */
+.msg-shell{display:grid;grid-template-columns:252px 1fr;background:var(--white);border:1px solid var(--line2);border-radius:var(--r4);overflow:hidden;height:560px}
+.msg-list-col{border-right:1px solid var(--line2);display:flex;flex-direction:column}
+.mll-head{padding:13px 15px;border-bottom:1px solid var(--line2);display:flex;align-items:center;justify-content:space-between}
+.mll-ht{font-size:13px;font-weight:700;color:var(--ink)}
+.mll-new{width:27px;height:27px;border-radius:var(--r2);background:var(--n900);display:flex;align-items:center;justify-content:center;cursor:pointer;color:white}
+.mll-new svg{width:12px;height:12px}
+.mll-srch{padding:9px 11px;border-bottom:1px solid var(--line2)}
+.mll-si{display:flex;align-items:center;gap:6px;background:var(--cream);border:1.5px solid var(--line);border-radius:var(--r3);padding:7px 10px;font-size:11px;color:var(--ink4);cursor:text}
+.mll-si svg{width:12px;height:12px;flex-shrink:0}
+.thread-list{flex:1;overflow-y:auto}
+.thread-list::-webkit-scrollbar{width:3px}
+.thread-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.mt-item{display:flex;gap:9px;padding:10px 12px;border-bottom:1px solid var(--line2);cursor:pointer;transition:var(--tr)}
+.mt-item:hover{background:var(--cream)}
+.mt-item.active{background:rgba(10,29,61,.04)}
+.mt-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.mt-inf{flex:1;overflow:hidden}
+.mt-n{font-size:12px;font-weight:700;color:var(--ink);display:flex;justify-content:space-between;margin-bottom:2px}
+.mt-time{font-size:9.5px;font-weight:500;color:var(--ink4)}
+.mt-p{font-size:10px;color:var(--ink4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mt-u{width:16px;height:16px;border-radius:50%;background:var(--g500);color:var(--n900);font-size:8.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.chat-col{display:flex;flex-direction:column;height:100%}
+.chat-top{padding:11px 17px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:11px}
+.chat-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.chat-meta{flex:1}
+.chat-cn{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:1px}
+.chat-on{font-size:10px;color:var(--ink4);display:flex;align-items:center;gap:4px}
+.on-dot{width:7px;height:7px;border-radius:50%;background:#10B981}
+.chat-btns{display:flex;gap:5px}
+.chat-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:var(--rf);font-family:'Plus Jakarta Sans',sans-serif;font-size:10.5px;font-weight:700;cursor:pointer;border:1.5px solid;transition:var(--tr)}
+.chat-btn.prim{background:var(--n900);border-color:var(--n900);color:white}
+.chat-btn.sec{background:transparent;border-color:var(--line);color:var(--ink3)}
+.chat-btn.sec:hover{border-color:var(--n900);color:var(--n900)}
+.chat-btn svg{width:11px;height:11px}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.mbubble{max-width:65%;display:flex;flex-direction:column;gap:2px}
+.mbubble.sent{align-self:flex-end;align-items:flex-end}
+.mbubble.recv{align-self:flex-start;align-items:flex-start}
+.bbl{padding:9px 13px;border-radius:13px;font-size:12px;line-height:1.5}
+.mbubble.sent .bbl{background:var(--n900);color:white;border-bottom-right-radius:3px}
+.mbubble.recv .bbl{background:var(--cream);color:var(--ink2);border-bottom-left-radius:3px}
+.bbl-tm{font-size:9px;color:var(--ink4);padding:0 3px}
+.date-div{align-self:center;background:var(--cream);border:1px solid var(--line2);border-radius:var(--rf);font-size:9px;font-weight:700;color:var(--ink4);padding:2px 9px}
+.chat-compose{padding:11px 14px;border-top:1px solid var(--line2);display:flex;gap:7px;align-items:flex-end}
+.compose-atch{width:32px;height:32px;border-radius:var(--r2);border:1.5px solid var(--line);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink4);flex-shrink:0;margin-bottom:2px;transition:var(--tr)}
+.compose-atch:hover{border-color:var(--n900);color:var(--n900)}
+.compose-atch svg{width:14px;height:14px}
+.compose-box{flex:1;background:var(--cream);border:1.5px solid var(--line);border-radius:11px;padding:9px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;color:var(--ink);outline:none;min-height:40px;max-height:100px;resize:none;line-height:1.5;transition:var(--tr)}
+.compose-box:focus{border-color:var(--n900);box-shadow:0 0 0 3px rgba(10,29,61,.07)}
+.compose-box::placeholder{color:var(--ink5)}
+.compose-send{width:38px;height:38px;border-radius:50%;background:var(--n900);border:none;color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:var(--tr)}
+.compose-send:hover{background:var(--n800);transform:scale(1.06)}
+.compose-send svg{width:15px;height:15px}
+
+/* === ANNOTATION OVERLAY === */
+.ann-wrap{position:relative}
+.ann-callout{position:absolute;z-index:50;pointer-events:none}
+.ann-circ{width:21px;height:21px;border-radius:50%;background:#E53535;color:white;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(229,53,53,.45),0 0 0 3px rgba(229,53,53,.15);pointer-events:all;cursor:pointer;transition:var(--tr)}
+.ann-circ:hover{transform:scale(1.25);z-index:100}
+.ann-panel{background:var(--white);border:1px solid var(--line2);border-radius:var(--r5);padding:22px;margin:14px 18px 20px}
+.ann-pt{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.ann-ps{font-size:11.5px;color:var(--ink4);margin-bottom:16px}
+.ann-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.ann-item{display:flex;gap:9px;padding:11px;background:var(--cream);border-radius:var(--r3);align-items:flex-start}
+.ann-num{width:21px;height:21px;border-radius:50%;background:#E53535;color:white;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ann-c{flex:1}
+.ann-h{font-size:11px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.ann-d{font-size:10px;color:var(--ink4);line-height:1.5}
+
+/* === BROWSER MOCKUP === */
+.mock-pg{background:linear-gradient(140deg,var(--cream) 0%,#E8E4DC 100%);padding:52px 60px 60px}
+.mock-hd{text-align:center;margin-bottom:44px}
+.mock-lbl{font-size:9.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px}
+.mock-t{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.mock-s{font-size:12.5px;color:var(--ink4)}
+.browser-wrap{max-width:1100px;margin:0 auto;box-shadow:0 32px 90px rgba(10,29,61,.22),0 0 0 1px rgba(255,255,255,.25);border-radius:11px;overflow:hidden}
+.browser-chrome{background:#2C2C2E;padding:10px 14px;display:flex;align-items:center;gap:11px}
+.b-dots{display:flex;gap:5.5px}
+.b-dot{width:11px;height:11px;border-radius:50%}
+.b-r{background:#FF5F57}.b-y{background:#FEBC2E}.b-g{background:#28C840}
+.b-bar{flex:1;background:#3C3C3E;border-radius:6px;padding:5.5px 11px;display:flex;align-items:center;gap:7px}
+.b-lock svg{width:10px;height:10px;color:rgba(255,255,255,.38)}
+.b-url{font-size:11.5px;color:rgba(255,255,255,.5)}
+.browser-vp{height:600px;overflow:hidden;background:var(--surface)}
+.browser-vp .app-shell{height:600px}
+.mock-caps{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;max-width:1100px;margin:20px auto 0}
+.cap-card{background:white;border-radius:var(--r4);padding:15px;display:flex;gap:10px;align-items:flex-start}
+.cap-n{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ink5);line-height:1;flex-shrink:0;width:30px}
+.cap-tx{flex:1}
+.cap-t{font-size:11.5px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.cap-d{font-size:10.5px;color:var(--ink4);line-height:1.5}
+
+/* UTILITY */
+.bg-nb{background:rgba(10,29,61,.08);color:var(--n900)}
+.bg-tb{background:var(--t100);color:var(--t600)}
+.bg-gb{background:var(--g100);color:#7A5000}
+.bg-pb{background:var(--p100);color:var(--p600)}
+.text-up{color:#059669}.text-dn{color:#DC2626}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<div class="meta-bar" role="banner" aria-label="Document metadata"><span>AYC Connect &nbsp;<em aria-hidden="true">·</em>&nbsp; <b>Web</b> Design Specification &nbsp;<em aria-hidden="true">·</em>&nbsp; UI/UX Assignment</span><span>Platform: Web &nbsp;<em aria-hidden="true">·</em>&nbsp; Pages: 3 &nbsp;<em aria-hidden="true">·</em>&nbsp; Screens: 5</span></div>
+<div class="page-nav" role="tablist" aria-label="Design document sections">
+  <button class="ptab active" onclick="switchPage('p1',this)" aria-selected="true" role="tab" aria-controls="p1"><span class="pnum" aria-hidden="true">1</span> Annotated Design</button>
+  <button class="ptab" onclick="switchPage('p2',this)" aria-selected="false" role="tab" aria-controls="p2"><span class="pnum" aria-hidden="true">2</span> Screen Design</button>
+  <button class="ptab" onclick="switchPage('p3',this)" aria-selected="false" role="tab" aria-controls="p3"><span class="pnum" aria-hidden="true">3</span> Device Mockup</button>
+</div>
+<div id="p1" class="psec active" role="tabpanel"><div class="ds-panel">
+  <div class="ds-top">
+    <div class="ayc-logo">
+      <div class="logo-mark"><svg viewBox="0 0 44 42" xmlns="http://www.w3.org/2000/svg">
+  <line x1="22" y1="9" x2="8" y2="34" stroke="rgba(200,148,26,.45)" stroke-width="1.5"/>
+  <line x1="22" y1="9" x2="36" y2="34" stroke="rgba(200,148,26,.45)" stroke-width="1.5"/>
+  <line x1="8" y1="34" x2="36" y2="34" stroke="rgba(10,29,61,.4)" stroke-width="1.5"/>
+  <circle cx="22" cy="9" r="8" fill="#C8941A"/>
+  <circle cx="8" cy="34" r="7" fill="#1A3562"/>
+  <circle cx="36" cy="34" r="7" fill="#0B8686"/>
+</svg></div>
+      <div class="logo-words"><span class="logo-ayc">AYC</span><span class="logo-connect">Connect</span></div>
+    </div>
+    <div class="ds-right">
+      <div class="ds-kicker">UI/UX Design Specification · Web Platform</div>
+      <div class="ds-title">AYC Connect<br><span style="font-weight:300">Design System</span></div>
+      <div class="ds-by">Sribalaji &nbsp;·&nbsp; UI/UX Designer &nbsp;·&nbsp; Aaytham Consulting (AyC)</div>
+    </div>
+  </div>
+  <div class="ds-grid">
+    <div class="ds-block">
+      <div class="ds-lbl">Color System</div>
+      <div class="cp-row">
+        <div class="chip" style="background:#0A1D3D;flex:2"><span class="chip-n" style="color:rgba(255,255,255,.7)">Navy #0A1D3D<br>Primary Brand</span></div>
+        <div class="chip" style="background:#C8941A"><span class="chip-n" style="color:rgba(0,0,0,.55)">Gold #C8941A<br>Accent</span></div>
+        <div class="chip" style="background:#0B8686"><span class="chip-n" style="color:rgba(255,255,255,.75)">Teal #0B8686<br>AI & Tech</span></div>
+      </div>
+      <div class="cp-row">
+        <div class="chip" style="background:#6B38B8"><span class="chip-n" style="color:rgba(255,255,255,.75)">Purple<br>Marketing</span></div>
+        <div class="chip" style="background:#F4F1EB;border:1px solid rgba(255,255,255,.15)"><span class="chip-n" style="color:rgba(10,29,61,.55)">Cream #F4F1EB<br>Background</span></div>
+        <div class="chip" style="background:#FFFFFF;border:1px solid rgba(255,255,255,.15)"><span class="chip-n" style="color:rgba(10,29,61,.45)">White<br>Surface</span></div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="ds-lbl" style="margin-bottom:10px">Status Palette</div>
+        <div class="status-row"><div class="s-dot" style="background:#2563EB"></div><span class="s-nm">In Progress</span><span class="s-badge-sm" style="background:#EFF6FF;color:#2563EB">Active</span></div>
+        <div class="status-row"><div class="s-dot" style="background:#059669"></div><span class="s-nm">Quote Generated</span><span class="s-badge-sm" style="background:#ECFDF5;color:#059669">Done</span></div>
+        <div class="status-row"><div class="s-dot" style="background:#7C3AED"></div><span class="s-nm">Proposal Done</span><span class="s-badge-sm" style="background:#F5F3FF;color:#7C3AED">Review</span></div>
+        <div class="status-row"><div class="s-dot" style="background:#D97706"></div><span class="s-nm">More Info Needed</span><span class="s-badge-sm" style="background:#FFFBEB;color:#D97706">Pending</span></div>
+        <div class="status-row"><div class="s-dot" style="background:#DC2626"></div><span class="s-nm">Turned Down</span><span class="s-badge-sm" style="background:#FEF2F2;color:#DC2626">Closed</span></div>
+      </div>
+    </div>
+    <div class="ds-block">
+      <div class="ds-lbl">Typography</div>
+      <div class="typo-samp">
+        <div class="t-name">Display — Cormorant Garamond</div>
+        <div class="t-disp" style="font-size:30px;font-weight:700">AYC Connect</div>
+        <div class="t-disp" style="font-size:20px;font-weight:300;font-style:italic">Consulting Excellence</div>
+        <div class="t-abc">Aa Bb Cc 0–9 !@#$</div>
+      </div>
+      <div class="typo-samp">
+        <div class="t-name">UI — Plus Jakarta Sans</div>
+        <div class="t-body" style="font-size:14px;font-weight:700">Bold / Headlines</div>
+        <div class="t-body" style="font-size:13px;font-weight:500">Medium / Body Text</div>
+        <div class="t-body" style="font-size:11px;font-weight:400">Regular / Captions & Labels</div>
+        <div class="t-abc">Aa Bb Cc Dd 123 !@#</div>
+      </div>
+    </div>
+    <div class="ds-block">
+      <div class="ds-lbl">Icon System</div>
+      <div class="icon-gs">
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Dashboard</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg><span>Services</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg><span>Request</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Tracker</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Messages</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg><span>Business</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg><span>AI/Tech</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>HR</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg><span>Marketing</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span>Alerts</span></div>
+        <div class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span>Settings</span></div>
+      </div>
+      <div style="margin-top:12px;padding:8px;background:rgba(255,255,255,.05);border-radius:8px;font-size:9px;color:rgba(255,255,255,.35);line-height:1.6">
+        All icons are bespoke geometric SVG paths. 24×24 viewBox, 1.75px stroke, round linecaps. Consistent optical weight across all glyphs.
+      </div>
+    </div>
+  </div>
+</div>
+<div style="background:#EDE9E1;padding:16px 18px 8px"><div style="font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#8A9AB0;margin-bottom:10px">● &nbsp;PAGE 1 &nbsp;— &nbsp;DASHBOARD SCREEN (ANNOTATED)</div><div class="ann-wrap"><div class="app-shell"><div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-mark"><svg viewBox="0 0 44 42" xmlns="http://www.w3.org/2000/svg">
+  <line x1="22" y1="9" x2="8" y2="34" stroke="rgba(200,148,26,.45)" stroke-width="1.5"/>
+  <line x1="22" y1="9" x2="36" y2="34" stroke="rgba(200,148,26,.45)" stroke-width="1.5"/>
+  <line x1="8" y1="34" x2="36" y2="34" stroke="rgba(10,29,61,.4)" stroke-width="1.5"/>
+  <circle cx="22" cy="9" r="8" fill="#C8941A"/>
+  <circle cx="8" cy="34" r="7" fill="#1A3562"/>
+  <circle cx="36" cy="34" r="7" fill="#0B8686"/>
+</svg></div><div class="sb-words"><span class="sb-ayc">AYC</span><span class="sb-con">Connect</span></div></div>
+      <nav class="sb-nav"><div class="nav-grp-lbl">MAIN</div><div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Dashboard</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg><span>Explore Services</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg><span>New Request</span></div><div class="sb-div"></div><div class="nav-grp-lbl">REQUESTS</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>My Requests</span><span class="nav-badge">3</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Track Status</span></div><div class="sb-div"></div><div class="nav-grp-lbl">SUPPORT</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Messages</span><span class="nav-badge">2</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span>Settings</span></div></nav>
+      <div class="sb-user">
+        <div class="sb-av">AS</div>
+        <div class="sb-ui"><div class="sb-un">Arjun Singh</div><div class="sb-ur">Pinnacle Solutions Ltd.</div></div>
+        <div class="sb-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+      </div></div><div class="main-area"><div class="topbar">
+      <div class="tb-bc">
+        <span>AYC Connect</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg><strong>Dashboard</strong>
+      </div>
+      <div class="tb-sp"></div>
+      <div class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Search anything...</span></div>
+      <div class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="tb-dot"></div></div>
+      <div class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="tb-av">AS</div>
+    </div><div class="main-content"><div class="greet-row">
+  <div>
+    <div class="greet-time">Thursday · May 29, 2025 · Good Morning</div>
+    <div class="greet-name">Good morning, Arjun Singh.</div>
+    <div class="greet-sub">Here's your AYC Connect workspace overview.</div>
+  </div>
+  <button class="greet-cta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> New Request</button>
+</div>
+<div class="stats-row">
+  <div class="stat-card"><div class="sc-ico bg-nb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div><div class="sc-val">3</div><div class="sc-lbl">Active Requests</div><div class="sc-trend trend-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18,15 12,9 6,15"/></svg> 2 this month</div></div>
+  <div class="stat-card"><div class="sc-ico" style="background:#FFFBEB;color:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></div><div class="sc-val">1</div><div class="sc-lbl">Pending Review</div><div class="sc-trend text-note">Awaiting action</div></div>
+  <div class="stat-card"><div class="sc-ico bg-tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg></div><div class="sc-val">5</div><div class="sc-lbl">Completed</div><div class="sc-trend text-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18,15 12,9 6,15"/></svg> All successful</div></div>
+  <div class="stat-card"><div class="sc-ico bg-gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg></div><div class="sc-val">9</div><div class="sc-lbl">Total Requests</div><div class="sc-trend text-note">Since onboarding</div></div>
+</div>
+<div class="dash-cols">
+  <div class="dash-left">
+    <div>
+      <div class="sh"><div class="sh-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg> Recent Requests</div><div class="sh-lnk">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></div></div>
+      <div class="req-list">
+        <div class="req-row"><div class="rr-ic bg-nb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div><div class="rr-inf"><div class="rr-t">Strategic Growth Planning Initiative</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg> Business Consulting</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2 days ago</span></div></div><div><span class="badge badge-p">In Progress</span></div></div>
+        <div class="req-row"><div class="rr-ic bg-pb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg></div><div class="rr-inf"><div class="rr-t">Brand Identity & Visual Refresh</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg> Marketing & Branding</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 5 days ago</span></div></div><div><span class="badge badge-r">Proposal Done</span></div></div>
+        <div class="req-row"><div class="rr-ic bg-tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg></div><div class="rr-inf"><div class="rr-t">AI Chatbot Implementation</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg> AI Solutions</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 1 week ago</span></div></div><div><span class="badge badge-i">More Info Needed</span></div></div>
+        <div class="req-row"><div class="rr-ic bg-gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="rr-inf"><div class="rr-t">Leadership Talent Acquisition Drive</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg> HR Services</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2 weeks ago</span></div></div><div><span class="badge badge-q">Quote Generated</span></div></div>
+        <div class="req-row"><div class="rr-ic bg-pb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg></div><div class="rr-inf"><div class="rr-t">Digital Marketing Strategy Q2</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg> Marketing & Branding</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 1 month ago</span></div></div><div><span class="badge badge-d">Turned Down</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="dash-right">
+    <div class="widget">
+      <div class="widget-h"><span class="widget-ht">Quick Actions</span></div>
+      <div class="widget-b">
+        <div class="qa-list">
+          <div class="qa-row"><div class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div><div class="qa-tx"><div class="qa-lbl">New Request</div><div class="qa-sub">Start a project request</div></div><div class="qa-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg></div></div>
+          <div class="qa-row"><div class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="qa-tx"><div class="qa-lbl">Message Consultant</div><div class="qa-sub">Chat with your team</div></div><div class="qa-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg></div></div>
+          <div class="qa-row"><div class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><div class="qa-tx"><div class="qa-lbl">Book a Meeting</div><div class="qa-sub">Schedule with AYC</div></div><div class="qa-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="widget">
+      <div class="widget-h"><span class="widget-ht">Upcoming Meetings</span><span class="widget-ha">View all</span></div>
+      <div class="widget-b">
+        <div class="mtg-item"><div class="mtg-date"><div class="mtg-day">WED</div><div class="mtg-num">04</div></div><div class="mtg-inf"><div class="mtg-tt">Strategy Review Call</div><div class="mtg-tm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> 10:00 AM · 45 min</div><div class="chip-xs bg-tb">Video Call</div></div></div>
+        <div class="mtg-item"><div class="mtg-date"><div class="mtg-day">FRI</div><div class="mtg-num">06</div></div><div class="mtg-inf"><div class="mtg-tt">Proposal Presentation</div><div class="mtg-tm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.7 19.79 19.79 0 01.07 1.12 2 2 0 012 .07h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> 3:00 PM · 60 min</div><div class="chip-xs bg-nb">In-person</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div></div><div class="ann-callout" style="top:18px;left:22px"><div class="ann-circ">1</div></div><div class="ann-callout" style="top:148px;left:22px"><div class="ann-circ">2</div></div><div class="ann-callout" style="top:208px;left:22px"><div class="ann-circ">3</div></div><div class="ann-callout" style="top:215px;left:22px"><div class="ann-circ">4</div></div><div class="ann-callout" style="top:670px;left:22px"><div class="ann-circ">5</div></div><div class="ann-callout" style="top:17px;left:56px"><div class="ann-circ">6</div></div><div class="ann-callout" style="top:16px;left:758px"><div class="ann-circ">7</div></div><div class="ann-callout" style="top:16px;left:1008px"><div class="ann-circ">8</div></div><div class="ann-callout" style="top:92px;left:320px"><div class="ann-circ">9</div></div><div class="ann-callout" style="top:200px;left:440px"><div class="ann-circ">10</div></div><div class="ann-callout" style="top:310px;left:440px"><div class="ann-circ">11</div></div><div class="ann-callout" style="top:272px;left:940px"><div class="ann-circ">12</div></div></div></div><div class="ann-panel">
+  <div class="ann-pt">Annotation Notes — Don Norman UX Principles Applied</div>
+  <div class="ann-ps">Each numbered callout explains a specific design decision grounded in cognitive science, usability heuristics, and Norman&#39;s Design Principles.</div>
+  <div class="ann-grid">
+    <div class="ann-item"><div class="ann-num">1</div><div class="ann-c"><div class="ann-h">Brand Logo &amp; Network Mark</div><div class="ann-d">Triangular node graph = AYC's 3-pillar service model (Business, AI, HR). Constant top position maintains brand presence. Visibility principle.</div></div></div>
+    <div class="ann-item"><div class="ann-num">2</div><div class="ann-c"><div class="ann-h">Persistent Sidebar Navigation</div><div class="ann-d">Left sidebar follows F-pattern. Always-visible navigation eliminates "where am I?" confusion. Norman's Natural Mapping.</div></div></div>
+    <div class="ann-item"><div class="ann-num">3</div><div class="ann-c"><div class="ann-h">Active State Design</div><div class="ann-d">Gold border + tinted background = dual-channel feedback. Color alone fails colorblind users — border adds position signal.</div></div></div>
+    <div class="ann-item"><div class="ann-num">4</div><div class="ann-c"><div class="ann-h">Notification Badge</div><div class="ann-d">Amber counter surfaces pending items without requiring navigation. Reduces user task overhead from 3 clicks to zero discovery.</div></div></div>
+    <div class="ann-item"><div class="ann-num">5</div><div class="ann-c"><div class="ann-h">User Identity &amp; Role</div><div class="ann-d">Name + company role in sidebar footer. Confirms "who is logged in" at a glance. Prevents wrong-account errors in shared environments.</div></div></div>
+    <div class="ann-item"><div class="ann-num">6</div><div class="ann-c"><div class="ann-h">Topbar Breadcrumb</div><div class="ann-d">Shows exact location in IA. Enables backward navigation (Norman's Reversibility). Subtle but critical for deep navigation paths.</div></div></div>
+    <div class="ann-item"><div class="ann-num">7</div><div class="ann-c"><div class="ann-h">Global Search</div><div class="ann-d">Pill-shaped field = universal "searchable" affordance. Top-right placement follows desktop Fitts' Law. Powers expert user workflows.</div></div></div>
+    <div class="ann-item"><div class="ann-num">8</div><div class="ann-c"><div class="ann-h">Notification &amp; Calendar Icons</div><div class="ann-d">Minimal interruption pattern: dot badge informs without modal. Bell + Calendar are universal, learned metaphors (Norman's Conceptual Model).</div></div></div>
+    <div class="ann-item"><div class="ann-num">9</div><div class="ann-c"><div class="ann-h">Contextual Greeting &amp; Time</div><div class="ann-d">Time-aware greeting + client name = emotional engagement. Cormorant Garamond display type elevates this daily moment. Personalization reduces alienation.</div></div></div>
+    <div class="ann-item"><div class="ann-num">10</div><div class="ann-c"><div class="ann-h">KPI Metric Cards</div><div class="ann-d">4-column stat grid (active, pending, complete, total) gives instant project health. Hover lift = interactive affordance. Cormorant numerals add authority.</div></div></div>
+    <div class="ann-item"><div class="ann-num">11</div><div class="ann-c"><div class="ann-h">Scannable Request List</div><div class="ann-d">Left-to-right scan: Icon → Service Type → Title → Date → Status (right-anchored). Status always at far right for quick comparison across rows.</div></div></div>
+    <div class="ann-item"><div class="ann-num">12</div><div class="ann-c"><div class="ann-h">Quick Actions Widget</div><div class="ann-d">Top 3 most-frequent tasks surfaced to 1-click. Dark hover = clear confirmation affordance. Reduces time-to-action by eliminating nav steps.</div></div></div>
+  </div>
+</div>
+</div><div id="p2" class="psec" role="tabpanel"><div class="scr-sw"><button class="stab active" onclick="switchScreen('s-dash',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Dashboard</button><button class="stab" onclick="switchScreen('s-svc',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg> Services</button><button class="stab" onclick="switchScreen('s-req',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> New Request</button><button class="stab" onclick="switchScreen('s-trk',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg> My Requests</button><button class="stab" onclick="switchScreen('s-msg',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Messages</button></div><div class="app-shell"><div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-mark"><svg viewBox="0 0 44 42" xmlns="http://www.w3.org/2000/svg">
+  <line x1="22" y1="9" x2="8" y2="34" stroke="rgba(200,148,26,.45)" stroke-width="1.5"/>
+  <line x1="22" y1="9" x2="36" y2="34" stroke="rgba(200,148,26,.45)" stroke-width="1.5"/>
+  <line x1="8" y1="34" x2="36" y2="34" stroke="rgba(10,29,61,.4)" stroke-width="1.5"/>
+  <circle cx="22" cy="9" r="8" fill="#C8941A"/>
+  <circle cx="8" cy="34" r="7" fill="#1A3562"/>
+  <circle cx="36" cy="34" r="7" fill="#0B8686"/>
+</svg></div><div class="sb-words"><span class="sb-ayc">AYC</span><span class="sb-con">Connect</span></div></div>
+      <nav class="sb-nav"><div class="nav-grp-lbl">MAIN</div><div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Dashboard</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg><span>Explore Services</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg><span>New Request</span></div><div class="sb-div"></div><div class="nav-grp-lbl">REQUESTS</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>My Requests</span><span class="nav-badge">3</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Track Status</span></div><div class="sb-div"></div><div class="nav-grp-lbl">SUPPORT</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Messages</span><span class="nav-badge">2</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span>Settings</span></div></nav>
+      <div class="sb-user">
+        <div class="sb-av">AS</div>
+        <div class="sb-ui"><div class="sb-un">Arjun Singh</div><div class="sb-ur">Pinnacle Solutions Ltd.</div></div>
+        <div class="sb-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+      </div></div><div class="main-area"><div class="topbar">
+      <div class="tb-bc">
+        <span>AYC Connect</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg><strong>Dashboard</strong>
+      </div>
+      <div class="tb-sp"></div>
+      <div class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Search anything...</span></div>
+      <div class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="tb-dot"></div></div>
+      <div class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="tb-av">AS</div>
+    </div><div class="main-content"><div id="s-dash" class="screen active"><div class="greet-row">
+  <div><div class="greet-time">Thursday · May 29, 2025 · Good Morning</div>
+    <div class="greet-name">Good morning, Arjun Singh.</div>
+    <div class="greet-sub">You have 3 active requests and 1 pending review.</div></div>
+  <button class="greet-cta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> New Request</button></div>
+<div class="stats-row">
+  <div class="stat-card"><div class="sc-ico bg-nb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div><div class="sc-val">3</div><div class="sc-lbl">Active Requests</div><div class="sc-trend trend-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18,15 12,9 6,15"/></svg> +2 this month</div></div>
+  <div class="stat-card"><div class="sc-ico" style="background:#FFFBEB;color:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></div><div class="sc-val">1</div><div class="sc-lbl">Pending Review</div></div>
+  <div class="stat-card"><div class="sc-ico bg-tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg></div><div class="sc-val">5</div><div class="sc-lbl">Completed</div><div class="sc-trend text-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18,15 12,9 6,15"/></svg> All successful</div></div>
+  <div class="stat-card"><div class="sc-ico bg-gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg></div><div class="sc-val">9</div><div class="sc-lbl">Total Requests</div></div>
+</div>
+<div class="dash-cols">
+  <div class="dash-left">
+    <div><div class="sh"><div class="sh-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg> Recent Requests</div><div class="sh-lnk">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></div></div>
+    <div class="req-list">
+      <div class="req-row"><div class="rr-ic bg-nb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div><div class="rr-inf"><div class="rr-t">Strategic Growth Planning Initiative</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg> Business Consulting</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2 days ago</span></div></div><div><span class="badge badge-p">In Progress</span></div></div>
+      <div class="req-row"><div class="rr-ic bg-pb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg></div><div class="rr-inf"><div class="rr-t">Brand Identity &amp; Visual Refresh</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg> Marketing</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 5 days ago</span></div></div><div><span class="badge badge-r">Proposal Done</span></div></div>
+      <div class="req-row"><div class="rr-ic bg-tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg></div><div class="rr-inf"><div class="rr-t">AI Chatbot Implementation</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg> AI Solutions</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 1 week ago</span></div></div><div><span class="badge badge-i">More Info Needed</span></div></div>
+      <div class="req-row"><div class="rr-ic bg-gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="rr-inf"><div class="rr-t">Leadership Talent Acquisition Drive</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg> HR Services</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2 weeks ago</span></div></div><div><span class="badge badge-q">Quote Generated</span></div></div>
+      <div class="req-row"><div class="rr-ic bg-pb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg></div><div class="rr-inf"><div class="rr-t">Digital Marketing Strategy Q2</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg> Marketing</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 1 month ago</span></div></div><div><span class="badge badge-d">Turned Down</span></div></div>
+    </div></div>
+  </div>
+  <div class="dash-right">
+    <div class="widget">
+      <div class="widget-h"><span class="widget-ht">Quick Actions</span></div>
+      <div class="widget-b"><div class="qa-list">
+        <div class="qa-row"><div class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div><div class="qa-tx"><div class="qa-lbl">New Request</div><div class="qa-sub">Start a project</div></div><div class="qa-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg></div></div>
+        <div class="qa-row"><div class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="qa-tx"><div class="qa-lbl">Message Consultant</div><div class="qa-sub">Chat with your team</div></div><div class="qa-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg></div></div>
+        <div class="qa-row"><div class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><div class="qa-tx"><div class="qa-lbl">Book a Meeting</div><div class="qa-sub">Schedule with AYC</div></div><div class="qa-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg></div></div>
+      </div></div>
+    </div>
+    <div class="widget">
+      <div class="widget-h"><span class="widget-ht">Upcoming Meetings</span><span class="widget-ha">View all</span></div>
+      <div class="widget-b">
+        <div class="mtg-item"><div class="mtg-date"><div class="mtg-day">WED</div><div class="mtg-num">04</div></div><div class="mtg-inf"><div class="mtg-tt">Strategy Review Call</div><div class="mtg-tm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> 10:00 AM · 45 min</div><div class="chip-xs bg-tb">Video Call</div></div></div>
+        <div class="mtg-item"><div class="mtg-date"><div class="mtg-day">FRI</div><div class="mtg-num">06</div></div><div class="mtg-inf"><div class="mtg-tt">Proposal Presentation</div><div class="mtg-tm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.7 19.79 19.79 0 01.07 1.12 2 2 0 012 .07h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> 3:00 PM · 60 min</div><div class="chip-xs bg-nb">In-person</div></div></div>
+      </div>
+    </div>
+  </div>
+</div></div><div id="s-svc" class="screen"><div class="svc-hd"><h2>Explore Our Services</h2><p>Choose a service category to learn more or submit a project request directly.</p></div>
+<div class="svc-grid">
+  <div class="svc-card sc-biz"><div class="svc-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div><div class="svc-cat">01 · Business</div><div class="svc-card-t">Business Consulting</div><div class="svc-desc">Drive operational excellence and unlock sustainable growth with expert strategic advisory and transformation services tailored to your industry.</div><div class="svc-tags"><span class="svc-tag">Strategic Planning</span><span class="svc-tag">Financial Advisory</span><span class="svc-tag">Operational Efficiency</span><span class="svc-tag">Change Management</span><span class="svc-tag">Org Restructuring</span></div><button class="svc-act">Request This Service <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></button></div>
+  <div class="svc-card sc-ai"><div class="svc-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg></div><div class="svc-cat">02 · Technology</div><div class="svc-card-t">AI Solutions</div><div class="svc-desc">Transform your operations with intelligent automation, predictive analytics, and custom AI tools that give your business a competitive edge.</div><div class="svc-tags"><span class="svc-tag">Process Automation</span><span class="svc-tag">Predictive Analytics</span><span class="svc-tag">AI Chatbots</span><span class="svc-tag">Data Insights</span><span class="svc-tag">Custom AI Models</span></div><button class="svc-act">Request This Service <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></button></div>
+  <div class="svc-card sc-hr"><div class="svc-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="svc-cat">03 · People</div><div class="svc-card-t">HR Services</div><div class="svc-desc">Build and empower your workforce with end-to-end human capital solutions — from talent acquisition to performance management and culture building.</div><div class="svc-tags"><span class="svc-tag">Talent Acquisition</span><span class="svc-tag">Performance Mgmt</span><span class="svc-tag">L&amp;D Programs</span><span class="svc-tag">Compensation</span><span class="svc-tag">Culture Building</span></div><button class="svc-act">Request This Service <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></button></div>
+  <div class="svc-card sc-mkt"><div class="svc-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg></div><div class="svc-cat">04 · Growth</div><div class="svc-card-t">Marketing &amp; Branding</div><div class="svc-desc">Amplify your brand's presence and drive customer growth with integrated marketing strategies, brand identity design, and go-to-market execution.</div><div class="svc-tags"><span class="svc-tag">Brand Identity</span><span class="svc-tag">GTM Strategy</span><span class="svc-tag">Digital Marketing</span><span class="svc-tag">Content Creation</span><span class="svc-tag">Customer Acquisition</span></div><button class="svc-act">Request This Service <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></button></div>
+</div></div><div id="s-req" class="screen"><div class="form-wrap">
+  <div style="margin-bottom:8px"><div class="greet-time">New Project Request</div><div class="greet-name" style="font-size:22px">Submit Your Request</div></div>
+  <div class="form-prog">
+    <div class="fp-step"><div class="fp-circ active">1<div class="fp-lbl">Service</div></div><div class="fp-line"></div></div>
+    <div class="fp-step"><div class="fp-circ">2<div class="fp-lbl">Company Details</div></div><div class="fp-line"></div></div>
+    <div class="fp-step"><div class="fp-circ">3<div class="fp-lbl">Project Details</div></div></div>
+  </div>
+  <div class="form-card">
+    <div class="fc-t">Select a Service</div>
+    <div class="fc-s">Which AYC service would you like to explore? You can request sub-services in the next step.</div>
+    <div class="svc-opts">
+      <div class="svc-opt sel"><div class="so-ic bg-nb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div><div class="so-tx"><div class="so-n">Business Consulting</div><div class="so-s">5 sub-services</div></div><div class="so-r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg></div></div>
+      <div class="svc-opt"><div class="so-ic bg-tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg></div><div class="so-tx"><div class="so-n">AI Solutions</div><div class="so-s">5 sub-services</div></div><div class="so-r"></div></div>
+      <div class="svc-opt"><div class="so-ic bg-gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="so-tx"><div class="so-n">HR Services</div><div class="so-s">5 sub-services</div></div><div class="so-r"></div></div>
+      <div class="svc-opt"><div class="so-ic bg-pb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg></div><div class="so-tx"><div class="so-n">Marketing &amp; Branding</div><div class="so-s">5 sub-services</div></div><div class="so-r"></div></div>
+    </div>
+    <div class="fg">
+      <div class="fi-grp"><label class="fi-lbl req">Specific Area of Interest</label><select class="fi"><option>Select sub-service...</option><option>Strategic Planning</option><option>Financial Advisory</option><option>Operational Efficiency</option><option>Change Management</option><option>Organisational Restructuring</option></select></div>
+      <div class="fi-grp"><label class="fi-lbl">Priority Level</label><select class="fi"><option>Normal</option><option>High</option><option>Urgent</option></select></div>
+    </div>
+    <div class="form-acts"><div></div><button class="btn-next">Next: Company Details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></button></div>
+  </div>
+  <div class="form-card" style="background:#F4F1EB;border-color:#E4DED5">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A9AB0;margin-bottom:8px">Step 2 Preview — Company Details</div>
+    <div class="fg">
+      <div class="fi-grp"><label class="fi-lbl">Company Name</label><input class="fi" placeholder="Your company name" disabled></div>
+      <div class="fi-grp"><label class="fi-lbl">Industry</label><input class="fi" placeholder="e.g. Technology" disabled></div>
+      <div class="fi-grp"><label class="fi-lbl">Company Size</label><select class="fi" disabled><option>Select size...</option></select></div>
+      <div class="fi-grp"><label class="fi-lbl">Location</label><input class="fi" placeholder="City, Country" disabled></div>
+    </div>
+  </div>
+</div></div><div id="s-trk" class="screen"><div class="trk-top"><h2>My Requests</h2><button class="greet-cta" style="font-size:11.5px;padding:8px 16px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> New Request</button></div>
+<div class="fil-row">
+  <div class="fil-pill active">All Requests <span class="fp-cnt">5</span></div>
+  <div class="fil-pill">In Progress <span class="fp-cnt">1</span></div>
+  <div class="fil-pill">Pending <span class="fp-cnt">2</span></div>
+  <div class="fil-pill">Completed <span class="fp-cnt">2</span></div>
+</div>
+<div class="trk-card expanded">
+  <div class="tc-ic bg-nb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+  <div class="tc-inf"><div class="tc-id">REQ-2025-001</div><div class="tc-t">Strategic Growth Planning Initiative</div><div class="tc-m"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg> Business Consulting</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Submitted May 27</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg> Ravi Kumar</span></div></div>
+  <div class="tc-right"><span class="badge badge-p">In Progress</span></div>
+  <div class="tc-tl">
+    <div class="tl-lbl">Request Timeline</div>
+    <div class="tl-track">
+      <div class="tl-step"><div class="tl-dot done"></div><div class="tl-lbl2">Requested</div></div>
+      <div class="tl-con done"></div>
+      <div class="tl-step"><div class="tl-dot done"></div><div class="tl-lbl2">Under Review</div></div>
+      <div class="tl-con done"></div>
+      <div class="tl-step"><div class="tl-dot cur"></div><div class="tl-lbl2 act">In Progress</div></div>
+      <div class="tl-con"></div>
+      <div class="tl-step"><div class="tl-dot"></div><div class="tl-lbl2">Proposal Done</div></div>
+      <div class="tl-con"></div>
+      <div class="tl-step"><div class="tl-dot"></div><div class="tl-lbl2">Quote Generated</div></div>
+    </div>
+  </div>
+</div>
+<div class="trk-card">
+  <div class="tc-ic bg-pb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg></div>
+  <div class="tc-inf"><div class="tc-id">REQ-2025-002</div><div class="tc-t">Brand Identity &amp; Visual Refresh</div><div class="tc-m"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg> Marketing &amp; Branding</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Submitted May 24</span></div></div>
+  <div class="tc-right"><span class="badge badge-r">Proposal Done</span></div>
+</div>
+<div class="trk-card">
+  <div class="tc-ic bg-tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg></div>
+  <div class="tc-inf"><div class="tc-id">REQ-2025-003</div><div class="tc-t">AI Chatbot Implementation</div><div class="tc-m"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg> AI Solutions</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Submitted May 22</span></div></div>
+  <div class="tc-right"><span class="badge badge-i">More Info Needed</span></div>
+</div>
+<div class="trk-card">
+  <div class="tc-ic bg-gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+  <div class="tc-inf"><div class="tc-id">REQ-2025-004</div><div class="tc-t">Leadership Talent Acquisition Drive</div><div class="tc-m"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg> HR Services</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Submitted May 15</span></div></div>
+  <div class="tc-right"><span class="badge badge-q">Quote Generated</span></div>
+</div>
+<div class="trk-card">
+  <div class="tc-ic bg-pb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg></div>
+  <div class="tc-inf"><div class="tc-id">REQ-2025-005</div><div class="tc-t">Digital Marketing Strategy Q2</div><div class="tc-m"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg> Marketing &amp; Branding</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Submitted April 30</span></div></div>
+  <div class="tc-right"><span class="badge badge-d">Turned Down</span></div>
+</div></div><div id="s-msg" class="screen"><div class="msg-shell">
+  <div class="msg-list-col">
+    <div class="mll-head"><span class="mll-ht">Messages</span><div class="mll-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div></div>
+    <div class="mll-srch"><div class="mll-si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Search conversations...</div></div>
+    <div class="thread-list">
+      <div class="mt-item active"><div class="mt-av" style="background:linear-gradient(135deg,#0A1D3D,#1A3562);color:white">RK</div><div class="mt-inf"><div class="mt-n"><span>Ravi Kumar</span><span class="mt-time">2h ago</span></div><div class="mt-p">Thank you for the detailed brief...</div></div><div class="mt-u">2</div></div>
+      <div class="mt-item"><div class="mt-av" style="background:linear-gradient(135deg,#4F2A8E,#6B38B8);color:white">PN</div><div class="mt-inf"><div class="mt-n"><span>Priya Nair</span><span class="mt-time">1d</span></div><div class="mt-p">We've reviewed your brand brief...</div></div></div>
+      <div class="mt-item"><div class="mt-av" style="background:linear-gradient(135deg,#076363,#0B8686);color:white">AS</div><div class="mt-inf"><div class="mt-n"><span>Akash Singh</span><span class="mt-time">3d</span></div><div class="mt-p">Could you clarify the AI scope...</div></div></div>
+      <div class="mt-item"><div class="mt-av" style="background:linear-gradient(135deg,#7A4A00,#C08015);color:white">MR</div><div class="mt-inf"><div class="mt-n"><span>Meera Raj</span><span class="mt-time">1w</span></div><div class="mt-p">Your HR request has been received...</div></div></div>
+    </div>
+  </div>
+  <div class="chat-col">
+    <div class="chat-top">
+      <div class="chat-av" style="background:linear-gradient(135deg,#0A1D3D,#1A3562);color:white">RK</div>
+      <div class="chat-meta"><div class="chat-cn">Ravi Kumar</div><div class="chat-on"><div class="on-dot"></div> Business Consultant · Online</div></div>
+      <div class="chat-btns"><button class="chat-btn sec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> Book Meeting</button><button class="chat-btn prim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.7 19.79 19.79 0 01.07 1.12 2 2 0 012 .07h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> Call</button></div>
+    </div>
+    <div class="chat-msgs">
+      <div class="date-div">Today — May 29, 2025</div>
+      <div class="mbubble recv"><div class="bbl">Hello Arjun! I've reviewed your Strategic Growth Planning request. Very well articulated. Could you share more about your current revenue targets and the markets you want to enter?</div><span class="bbl-tm">10:14 AM</span></div>
+      <div class="mbubble sent"><div class="bbl">Hi Ravi! Great to hear from you. Our primary target is to grow 40% YoY in the South Asian market. We're also looking at entering UAE by Q3.</div><span class="bbl-tm">10:22 AM</span></div>
+      <div class="mbubble recv"><div class="bbl">That's a very achievable goal given your current positioning. I'd recommend we schedule a discovery call this week to align on priorities. I'll send over a proposal framework by Friday.</div><span class="bbl-tm">10:35 AM</span></div>
+      <div class="mbubble sent"><div class="bbl">Perfect. Friday works well. Should I block Wednesday 10 AM for the discovery call?</div><span class="bbl-tm">10:40 AM</span></div>
+      <div class="mbubble recv"><div class="bbl">Wednesday 10 AM works great. I'll send you a calendar invite with the agenda shortly. Looking forward to it!</div><span class="bbl-tm">10:43 AM</span></div>
+    </div>
+    <div class="chat-compose">
+      <div class="compose-atch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></div>
+      <textarea class="compose-box" placeholder="Type a message..."></textarea>
+      <button class="compose-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg></button>
+    </div>
+  </div>
+</div></div></div></div></div></div><div id="p3" class="psec" role="tabpanel"><div class="mock-pg">
+  <div class="mock-hd">
+    <div class="mock-lbl">Page 3 · Device Mockup</div>
+    <div class="mock-t">AYC Connect — Web Platform</div>
+    <div class="mock-s">Dashboard view shown inside a macOS Safari browser frame at 1280px viewport width</div>
+  </div>
+  <div class="browser-wrap">
+    <div class="browser-chrome">
+      <div class="b-dots"><div class="b-dot b-r"></div><div class="b-dot b-y"></div><div class="b-dot b-g"></div></div>
+      <div class="b-bar"><div class="b-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><span class="b-url">app.aycconnect.com/dashboard</span></div>
+    </div>
+    <div class="browser-vp">
+      <div class="app-shell"><div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-mark"><svg viewBox="0 0 44 42" xmlns="http://www.w3.org/2000/svg">
+  <line x1="22" y1="9" x2="8" y2="34" stroke="rgba(200,148,26,.45)" stroke-width="1.5"/>
+  <line x1="22" y1="9" x2="36" y2="34" stroke="rgba(200,148,26,.45)" stroke-width="1.5"/>
+  <line x1="8" y1="34" x2="36" y2="34" stroke="rgba(10,29,61,.4)" stroke-width="1.5"/>
+  <circle cx="22" cy="9" r="8" fill="#C8941A"/>
+  <circle cx="8" cy="34" r="7" fill="#1A3562"/>
+  <circle cx="36" cy="34" r="7" fill="#0B8686"/>
+</svg></div><div class="sb-words"><span class="sb-ayc">AYC</span><span class="sb-con">Connect</span></div></div>
+      <nav class="sb-nav"><div class="nav-grp-lbl">MAIN</div><div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Dashboard</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg><span>Explore Services</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg><span>New Request</span></div><div class="sb-div"></div><div class="nav-grp-lbl">REQUESTS</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>My Requests</span><span class="nav-badge">3</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Track Status</span></div><div class="sb-div"></div><div class="nav-grp-lbl">SUPPORT</div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Messages</span><span class="nav-badge">2</span></div><div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span>Settings</span></div></nav>
+      <div class="sb-user">
+        <div class="sb-av">AS</div>
+        <div class="sb-ui"><div class="sb-un">Arjun Singh</div><div class="sb-ur">Pinnacle Solutions Ltd.</div></div>
+        <div class="sb-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+      </div></div>
+        <div class="main-area"><div class="topbar">
+      <div class="tb-bc">
+        <span>AYC Connect</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg><strong>Dashboard</strong>
+      </div>
+      <div class="tb-sp"></div>
+      <div class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Search anything...</span></div>
+      <div class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="tb-dot"></div></div>
+      <div class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div class="tb-av">AS</div>
+    </div>
+          <div class="main-content">
+            <div class="greet-row">
+              <div><div class="greet-time">Thursday · May 29, 2025 · Good Morning</div>
+              <div class="greet-name">Good morning, Arjun Singh.</div>
+              <div class="greet-sub">You have 3 active requests and 1 pending review.</div></div>
+              <button class="greet-cta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> New Request</button>
+            </div>
+            <div class="stats-row">
+              <div class="stat-card"><div class="sc-ico bg-nb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div><div class="sc-val">3</div><div class="sc-lbl">Active Requests</div></div>
+              <div class="stat-card"><div class="sc-ico" style="background:#FFFBEB;color:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></div><div class="sc-val">1</div><div class="sc-lbl">Pending Review</div></div>
+              <div class="stat-card"><div class="sc-ico bg-tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"/></svg></div><div class="sc-val">5</div><div class="sc-lbl">Completed</div></div>
+              <div class="stat-card"><div class="sc-ico bg-gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg></div><div class="sc-val">9</div><div class="sc-lbl">Total Requests</div></div>
+            </div>
+            <div class="dash-cols">
+              <div class="dash-left">
+                <div><div class="sh"><div class="sh-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg> Recent Requests</div><div class="sh-lnk">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></div></div>
+                <div class="req-list">
+                  <div class="req-row"><div class="rr-ic bg-nb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div><div class="rr-inf"><div class="rr-t">Strategic Growth Planning Initiative</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,8.5 12,15 2,8.5"/><polyline points="2,15.5 12,22 22,15.5"/><polyline points="2,12 12,18.5 22,12"/></svg> Business Consulting</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2 days ago</span></div></div><div><span class="badge badge-p">In Progress</span></div></div>
+                  <div class="req-row"><div class="rr-ic bg-pb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg></div><div class="rr-inf"><div class="rr-t">Brand Identity & Visual Refresh</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,7 13.5,15.5 8.5,10.5 1,18"/><polyline points="16,7 22,7 22,13"/></svg> Marketing</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 5 days ago</span></div></div><div><span class="badge badge-r">Proposal Done</span></div></div>
+                  <div class="req-row"><div class="rr-ic bg-tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg></div><div class="rr-inf"><div class="rr-t">AI Chatbot Implementation</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><circle cx="4.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="19.5" cy="17" r="2" fill="currentColor" stroke="none"/><line x1="6.4" y1="8.1" x2="10" y2="11"/><line x1="17.6" y1="8.1" x2="14" y2="11"/><line x1="6.4" y1="15.9" x2="10" y2="13"/><line x1="17.6" y1="15.9" x2="14" y2="13"/></svg> AI Solutions</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 1 week ago</span></div></div><div><span class="badge badge-i">More Info Needed</span></div></div>
+                  <div class="req-row"><div class="rr-ic bg-gb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div class="rr-inf"><div class="rr-t">Leadership Talent Acquisition Drive</div><div class="rr-s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg> HR Services</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2 weeks ago</span></div></div><div><span class="badge badge-q">Quote Generated</span></div></div>
+                </div></div>
+              </div>
+              <div class="dash-right">
+                <div class="widget">
+                  <div class="widget-h"><span class="widget-ht">Quick Actions</span></div>
+                  <div class="widget-b"><div class="qa-list">
+                    <div class="qa-row"><div class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div><div class="qa-tx"><div class="qa-lbl">New Request</div><div class="qa-sub">Start a project</div></div><div class="qa-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg></div></div>
+                    <div class="qa-row"><div class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="qa-tx"><div class="qa-lbl">Message Consultant</div></div><div class="qa-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg></div></div>
+                    <div class="qa-row"><div class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><div class="qa-tx"><div class="qa-lbl">Book a Meeting</div></div><div class="qa-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,18 15,12 9,6"/></svg></div></div>
+                  </div></div>
+                </div>
+                <div class="widget">
+                  <div class="widget-h"><span class="widget-ht">Upcoming Meetings</span><span class="widget-ha">View all</span></div>
+                  <div class="widget-b">
+                    <div class="mtg-item"><div class="mtg-date"><div class="mtg-day">WED</div><div class="mtg-num">04</div></div><div class="mtg-inf"><div class="mtg-tt">Strategy Review Call</div><div class="mtg-tm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> 10:00 AM · 45 min</div><div class="chip-xs bg-tb">Video Call</div></div></div>
+                    <div class="mtg-item"><div class="mtg-date"><div class="mtg-day">FRI</div><div class="mtg-num">06</div></div><div class="mtg-inf"><div class="mtg-tt">Proposal Presentation</div><div class="mtg-tm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.7 19.79 19.79 0 01.07 1.12 2 2 0 012 .07h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> 3:00 PM</div><div class="chip-xs bg-nb">In-person</div></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mock-caps">
+    <div class="cap-card"><div class="cap-n">01</div><div class="cap-tx"><div class="cap-t">Persistent Navigation Architecture</div><div class="cap-d">232px sidebar maintains navigation context at all times. Users always know where they are and can navigate to any section in one click. Based on Norman's visibility principle.</div></div></div>
+    <div class="cap-card"><div class="cap-n">02</div><div class="cap-tx"><div class="cap-t">Semantic Status Color System</div><div class="cap-d">5 states × 2 visual cues (color + dot badge) = WCAG AA accessible status communication. Each status has a unique hue from the brand spectrum.</div></div></div>
+    <div class="cap-card"><div class="cap-n">03</div><div class="cap-tx"><div class="cap-t">Micro-interaction Design Language</div><div class="cap-d">Hover lift on cards (2px translateY), color-swap on quick-action rows, active states with dual affordance. All transitions at 180-280ms ease — imperceptible yet meaningful.</div></div></div>
+  </div>
+</div></div><script>
+function switchPage(id, btn) {
+  document.querySelectorAll('.psec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.ptab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected','true');
+}
+function switchScreen(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected','true');
+}
+// Service option selection
+document.querySelectorAll('.svc-opt').forEach(opt => {
+  opt.addEventListener('click', function() {
+    document.querySelectorAll('.svc-opt').forEach(o => o.classList.remove('sel'));
+    this.classList.add('sel');
+  });
+});
+// Tracker card expand
+document.querySelectorAll('.trk-card').forEach(card => {
+  card.addEventListener('click', function() {
+    this.classList.toggle('expanded');
+  });
+});
+// Filter pills
+document.querySelectorAll('.fil-pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    this.closest('.fil-row').querySelectorAll('.fil-pill').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body></html>
